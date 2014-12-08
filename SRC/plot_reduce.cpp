@@ -5,9 +5,8 @@
 //  Created by Aaron Benz on 10/16/14.
 //
 //
-
-//#include "plot_reduce.h"
 #include <Rcpp.h>
+//#include "plot_reduce.h"
 using namespace Rcpp;
 
 //a very fast way to see all of the critical points of a time-series type problem
