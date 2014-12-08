@@ -1,0 +1,8 @@
+Package: timeseries
+Title: Helpful functions for merging, calculating, and plotting time-series data
+Version: 0.1
+Authors@R: "Aaron Benz <aaron.n.benz@gmail.com> [Aaron Benz, Aaron Benz]"
+Description: This package provides functions that enables complex time-series calculation, including the ability to plot a massivie amount of points very quickly.
+Depends: R (>= 3.1.1)
+License: Apache2
+LazyData: true
