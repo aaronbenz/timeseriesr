@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 reducePoints <- function(x, tolerance) {
-    .Call('timeseries_reducePoints', PACKAGE = 'timeseries', x, tolerance)
+    .Call('timeseriesr_reducePoints', PACKAGE = 'timeseriesr', x, tolerance)
 }
 

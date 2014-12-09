@@ -1,4 +1,4 @@
-Package: timeseries
+Package: timeseriesr
 Title: Helpful functions for merging, calculating, and plotting time-series data
 Version: 0.1
 Authors@R: person("Aaron", "Benz", email = "aaron.n.benz@gmail.com",role = c("aut", "cre"))
