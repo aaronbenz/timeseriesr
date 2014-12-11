@@ -7,6 +7,7 @@ Depends: R (>= 3.1.1)
 License: Apache2
 LazyData: true
 LinkingTo: Rcpp
-Imports: data.table,
-          ggplot2,
-          Rcpp
+Imports: data.table(>= 1.9.2),
+          ggplot2 (>= 1.0.0),
+          Rcpp (>= 0.11.3)
+Suggests: testthat
