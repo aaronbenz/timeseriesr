@@ -1,39 +1,57 @@
-#replace NA values in array with last known value
-manipulate_replace= function(x, replace_value = NA, replace_with = "LOCF", first_if_unknown = FALSE){
+#' Replace Values in a vector/data.frame/data.table
+#' 
+#' Replace NAs or a specific value in a numeric vector/data.frame/data.table
+#' 
+#' @param x A numeric vector
+#' @param replace Value to be replaced; NA by default
+#' @param replacement The replacement value, which is Last Observation Carried Forward by default
+#' @param first If the first value is unknown and LOCF, will fill with first known value unless specified here
+#' 
+#' @return A vector where all values equal to \code{replace} in \code{x} are replaced with \code{replacement}.
+#' @examples 
+#' tmp <- c(NA,2,3,NA,5,6)
+#' manipulate_replace(tmp)
+#' manipulate_replace(tmp, replace = 2)
+#' manipulate_replace(tmp, replacement = 4)
+#' manipulate_replace(tmp, replace = 3, replacement = 3)
+#' manipulate_replace(tmp, first = 1)
+manipulate_replace= function(x, replace = NA, replacement = "LOCF", first = NA){
     #will replace NAs with LOCF, if like to be handled differently, do before this function
-    #otherwise, will by default replace replace value with LOCF unless a number or other value is specified
-    replace_nas = T
-    if(replace_nas | is.na(replace_value)){
-        if(is.na(x[1])){
-        if(first_if_unknown) x[1]=x[which(!is.na(x))[1]] #if NA is first value, replace with first known value
-        else( x[1] = 0)
+    #otherwise, will by default replace value with LOCF unless a number or other value is specified
+      if((is.na(replace) & is.na(x[1]))) x[1] <- first
+      if(!is.na(replace) & !is.na(x[1])){
+        if(x[1] == replace) x[1] <- first
+      }
+      if(is.na(replace)){
+        if(is.na(replacement)){
+          #where replace and replacement are both NA
+          return(x)
+        }else if(replacement != "LOCF"){
+          x[is.na(x)] <- replacement
+          return(x)
         }
-        if(is.na(x[1])) x[1] = 0 #in the case that the previous step could not find a non NA value, just set to zero
-        ind = which(!is.na(x))
-        x <- (rep(x[ind], times = diff(c(ind, length(x) + 1) )))
-        
-        if(is.na(replace_value))return(x)
-        
+      }else if(!is.na(replacement)){
+        if(replacement != "LOCF"){
+          x[x==replace] <- replacement
+          return(x)
         }
-    if(x[1] == replace_value){
-        if(first_if_unknown) x[1]=x[which(x!= replace_value)[1]] #if NA is first value, replace with first known value
-        else( x[1] = 0)
-    }
-    if(x[1] == replace_value) x[1] = 0 #in the case that the previous step could not find a non replace_value value, just set to zero
-    if(replace_with == "LOCF"){
-        ind = which(x!=replace_value)
-        return(rep(x[ind], times = diff(c(ind, length(x) + 1) )))
-    }
-    x[x==replace_value] <- replace_with
-    return(x)
-}
-#replace NA values of all columns in a data table with last known value
-manipulate_replace_nas_dt=function(x, first_if_unknown = FALSE){
-    for(i in 1:length(x)){
-        x[[i]]=manipulate_replace_nas(x[[i]], first_if_unknown)
-    }
-    return(x)
-}
+      }
+      
+      ind <- numeric(0)
+      if(is.na(replace)){
+        ind <- which(!is.na(x))
+      }else ind <- which(x!=replace)
+          
+      ((rep(x[ind], times = diff(c(ind, length(x) + 1) ))))
+  }
+    
+#     if(is.array(x)) return(replace_func())
+#     if(is.data.frame(x)) return(lapply(x, replace_func,replace = NA, replacement = "LOCF", first = FALSE))
+
+# 
+# manipulate_replace_dt=function(x, replace = NA, replacement = "LOCF", first = FALSE){
+#     sapply(x, manipulate_replace, replace = replace, replacement = replacement, first = first)
+# }
 manipulate_deduplicate = function(dt,column){
     dt_dedup <- rbindlist(list(dt[c(1,diff(dt[[column]]))!=0],dt[nrow(dt)]))
 #     return(dt_dedup)

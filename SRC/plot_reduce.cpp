@@ -21,13 +21,12 @@ List reducePoints(NumericVector x, double tolerance){
     index.push_back(1);//take first value in the vector always
     values.push_back(x[0]);
     
-    //loop through all values
     for (int i = 1; i < x.size(); i++) {
         tmp = values.back() - x[i];
         if(tmp < 0){
             tmp = tmp * -1;
         } 
-        if(tmp > tol){ //bug with abs... when numbers are less than 1
+        if(tmp > tol){ //#bug with abs() when numbers are less than 1, using comparitor above instead
             index.push_back(i+1);
             values.push_back(x[i]);
         }else{
