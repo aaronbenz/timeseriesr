@@ -1,6 +1,6 @@
 #' Replace Values in a vector/data.frame/data.table
 #' 
-#' Replace NAs or a specific value in a numeric vector/data.frame/data.table
+#' @description Replace NAs or a specific value in a vector/data.frame/data.table
 #' 
 #' @param x A numeric vector
 #' @param replace Value to be replaced; NA by default
@@ -22,7 +22,7 @@ manipulate_replace= function(x, replace = NA, replacement = "LOCF", first = NA){
       if(!is.na(replace) & !is.na(x[1])){
         if(x[1] == replace) x[1] <- first
       }
-      if(is.na(replace)){
+      if(is.na(replace)){ #replace is na
         if(is.na(replacement)){
           #where replace and replacement are both NA
           return(x)
@@ -30,19 +30,20 @@ manipulate_replace= function(x, replace = NA, replacement = "LOCF", first = NA){
           x[is.na(x)] <- replacement
           return(x)
         }
-      }else if(!is.na(replacement)){
+      }else if(!is.na(replacement)){ #replace has real value, but replacement is not LOCF
         if(replacement != "LOCF"){
           x[x==replace] <- replacement
           return(x)
         }
       }
       
+      #only options left should be if replace is not NA and replacement is LOCF
       ind <- numeric(0)
       if(is.na(replace)){
         ind <- which(!is.na(x))
       }else ind <- which(x!=replace)
           
-      ((rep(x[ind], times = diff(c(ind, length(x) + 1) ))))
+      return(rep(x[ind], times = diff(c(ind, length(x) + 1) )))
   }
     
 #     if(is.array(x)) return(replace_func())

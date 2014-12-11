@@ -2,6 +2,28 @@
 #if return_as_vector = True, returns total over entire area by each row
 # if False, returns array of total of each row
 #if diffTime = TRUE, will treat time_date as if it is diff time_date, so it does have to take it
+#' Calculate Area Under the Curve
+#' 
+#' @description This function takes two vectors, a time-date vector and a numeric vector and performs computations to measure to total area
+#' under the curve. Its apprach is to use Reimann Left Sums is and aimed towards time-series data
+#' 
+#' @param time_date A numeric or date.time vector
+#' @param value A numeric vector
+#' @param as_vector Boolean describing if return value should be the totaled sum or a vector representing area at each `time` value
+#' @param diff_time Boolean describing if `time` is the difference in area, or if it needs to be calculated
+#' @param neg_area Boolean describing if negative area should be measured or it all area is positive
+#' 
+#' @return The total area under the curve of `value` with respect to the time measured at `time`
+#' 
+#' @examples
+#'  time <- 1:10
+#'  value <- sin(1:10)
+#'  examples
+#'  calc_area(time, value)
+#'  calc_area(time, value, T)
+#'  calc_area(time, value, diff_time = T)
+#'  calc_area(time, value, neg_area = T)
+#'  calc_area(time, value, T, T)
 calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_area = FALSE){
     #excepting time_date and value to be numeric vectors of the same length
     stopifnot(length(time_date) == length(value),

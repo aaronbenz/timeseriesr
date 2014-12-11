@@ -3,7 +3,7 @@
 \alias{manipulate_replace}
 \title{Replace Values in a vector/data.frame/data.table}
 \usage{
-manipulate_replace(x, replace = NA, replacement = "LOCF", first = FALSE)
+manipulate_replace(x, replace = NA, replacement = "LOCF", first = NA)
 }
 \arguments{
 \item{x}{A numeric vector}
