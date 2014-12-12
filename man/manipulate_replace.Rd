@@ -18,7 +18,7 @@ manipulate_replace(x, replace = NA, replacement = "LOCF", first = NA)
 A vector where all values equal to \code{replace} in \code{x} are replaced with \code{replacement}.
 }
 \description{
-Replace NAs or a specific value in a numeric vector/data.frame/data.table
+Replace NAs or a specific value in a vector/data.frame/data.table
 }
 \examples{
 tmp <- c(NA,2,3,NA,5,6)

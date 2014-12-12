@@ -12,6 +12,7 @@
 #' @param as_vector Boolean describing if return value should be the totaled sum or a vector representing area at each `time` value
 #' @param diff_time Boolean describing if `time` is the difference in area, or if it needs to be calculated
 #' @param neg_area Boolean describing if negative area should be measured or it all area is positive
+#' @param na.replace Function that replaces NA values from `value` with Last Observation Carried Forward. See \code{\link{manipulate_replace}}
 #' 
 #' @return The total area under the curve of `value` with respect to the time measured at `time`
 #' 
@@ -24,18 +25,26 @@
 #'  calc_area(time, value, diff_time = T)
 #'  calc_area(time, value, neg_area = T)
 #'  calc_area(time, value, T, T)
-calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_area = FALSE){
+calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_area = FALSE, na.replace = manipulate_replace, ...){
     #excepting time_date and value to be numeric vectors of the same length
     stopifnot(length(time_date) == length(value),
               is.numeric(time_date), is.numeric(value),
               is.logical(as_vector), is.logical(diff_time), is.logical(neg_area))
+    if(sum(is.na(time_date))>0) warning("time_date contains NA value(s). Results may not be as expected")
     
-    if(length(time_date) == 0) return(0)
-    if(!neg_area) value <- abs(value) #if all area should be treated as positive, change all values to positive
+    #replaces NA values in <value> with LOCF by default
+    if(!exists("first")) first <- 0
+    value <- na.replace(value, ...) 
+    
+    #if all area should be treated as positive, change all values to positive
+    if(!neg_area) value <- abs(value) 
+    
+    #if wanting total sum, do matrix calculation
     if(as_vector==FALSE) {
         if(diff_time == FALSE) return((c(diff(time_date),0) %*% value)[1,1])
         return((time_date %*% value)[1,1])
     }
+    #if want an area vector returned, do vector calculation
     else{
         if(diff_time == FALSE) return(c(diff(time_date),0) * value)
         return(time_date * value)
