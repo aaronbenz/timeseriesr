@@ -2,11 +2,9 @@
 #11-07-2014
 #show examples of point reduce at work
 library(shiny)
-library(Rcpp)
 library(data.table)
 library(ggplot2)
-library(ggvis)
-library(dygraphs)
+library(timeseriesr)
 
 
 # Define UI for application that draws a histogram

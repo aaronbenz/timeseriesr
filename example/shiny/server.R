@@ -3,12 +3,9 @@
 #show examples of point reduce at work
 
 library(shiny)
-library(Rcpp)
 library(data.table)
 library(ggplot2)
-library(ggvis)
-library(dygraphs)
-sourceCpp("plot_reduce.cpp")
+library(timeseriesr)
 print("check")
 
 # Define server logic required to draw a histogram
