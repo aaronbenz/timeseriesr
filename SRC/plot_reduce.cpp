@@ -8,8 +8,22 @@
 #include <Rcpp.h>
 //#include "plot_reduce.h"
 using namespace Rcpp;
-
-//a very fast way to see all of the critical points of a time-series type problem
+//' Reduce the number of points needed to plot time series data
+//' @description A very fast way to reduce the number of points in a time-series dataset. This algorithm takes a tolerance
+//' range and will return all of the critical points/indexes over that range
+//' 
+//' @param x A numeric vector
+//' @param tolerance A decimal representing the percentage of tolerance acceptible
+//' 
+//' @return The value return is a list of two vectors:
+//' index | vector contained indexed values of critical points
+//' values | vector containing the actual values
+//' 
+//' @examples
+//' reducePoints(1001:1100, .1)
+//' 
+//' #takes a sin curve of 99001 in length and reduces it down to 3008 points
+//' reducePoints(sin(seq(1,100,.001)),.01)
 // [[Rcpp::export]]
 List reducePoints(NumericVector x, double tolerance){
     std::vector<int> index;

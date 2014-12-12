@@ -2,5 +2,5 @@
 .Rhistory
 .RData
 .RcppExports.o
-.so
-.o
+*.so
+*.o

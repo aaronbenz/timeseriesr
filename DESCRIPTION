@@ -8,6 +8,7 @@ License: Apache2
 LazyData: true
 LinkingTo: Rcpp
 Imports: data.table(>= 1.9.2),
-          ggplot2 (>= 1.0.0),
           Rcpp (>= 0.11.3)
-Suggests: testthat
+Suggests: ggplot2 (>= 1.0.0),
+          shiny (>= 0.10.2),
+          testthat
