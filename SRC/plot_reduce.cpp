@@ -20,12 +20,12 @@ using namespace Rcpp;
 //' values | vector containing the actual values
 //' 
 //' @examples
-//' reducePoints(1001:1100, .1)
+//' point_reduce(1001:1100, .1)
 //' 
 //' #takes a sin curve of 99001 in length and reduces it down to 3008 points
-//' reducePoints(sin(seq(1,100,.001)),.01)
+//' point_reduce(sin(seq(1,100,.001)),.01)
 // [[Rcpp::export]]
-List reducePoints(NumericVector x, double tolerance){
+List point_reduce(NumericVector x, double tolerance){
     std::vector<int> index;
     std::vector<double> values;
     std::vector<double> wtf;
