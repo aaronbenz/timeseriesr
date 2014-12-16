@@ -56,12 +56,19 @@ dtreplace <- function(x, replace = NA, replacement = "LOCF", first = NA){
     sapply(x, vreplace, ...)
 }
 
-manipulate_deduplicate <- function(dt,column){
+vdeduplicate <- function(vec){
+    stopifnot(vector(vec))
+    
     dt_dedup <- rbindlist(list(dt[c(1,diff(dt[[column]]))!=0],dt[nrow(dt)]))
 #     return(dt_dedup)
     return(dt_dedup[!duplicated(dt_dedup,by=NULL)])
 }
 
+dtdeduplicate <- function(dt,column){
+  dt_dedup <- rbindlist(list(dt[c(1,diff(dt[[column]]))!=0],dt[nrow(dt)]))
+  #     return(dt_dedup)
+  return(dt_dedup[!duplicated(dt_dedup,by=NULL)])
+}
 
 #given some datatable dt, return 
 manipulate_subset_dt <- function(dt, beg_times, end_times, roll_beginning = F, roll_end = T, time_index = "time_date",group_by = NA){ #dt must contain a column of time_date
