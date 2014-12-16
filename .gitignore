@@ -4,3 +4,4 @@
 .RcppExports.o
 *.so
 *.o
+.DS_Store
