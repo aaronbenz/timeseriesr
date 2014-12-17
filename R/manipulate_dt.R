@@ -5,8 +5,7 @@
 #' @param x A numeric vector
 #' @param replace Value to be replaced; NA by default
 #' @param replacement The replacement value, which is Last Observation Carried Forward by default
-#' @param first If the first value is unknown and LOCF, will fill with first known value unless specified here
-#' 
+#' @param first If LOCF, and the first value is `replace`, subsitute this value
 #' @return A vector where all values equal to \code{replace} in \code{x} are replaced with \code{replacement}.
 #' 
 #' @examples 
@@ -17,42 +16,57 @@
 #' vreplace(tmp, replace = 3, replacement = 3)
 #' vreplace(tmp, first = 1)
 vreplace <- function(x, replace = NA, replacement = "LOCF", first = NA){
+  #use cases that must deal with individuall
+  #replace = NA, replacement = NA
+        #1. return same
+  #replace = !NA, replacement = !NA
+        #1. return same
+  #replace = NA, replacement = LOCF
+        #1. get first value that is not NA -> store
+        #2. apend at very end (need to do this in general as well only for LOCF)
+        #2. Do LOCF
+  #replace = NA, replacement = !LOCF
+        #1. x[is.na(x)] <- replacement
+  #replace = !NA, replacement = LOCF
+        #1. do LOCF operation
     #will replace NAs with LOCF, if like to be handled differently, do before this function
     #otherwise, will by default replace value with LOCF unless a number or other value is specified
-      if((is.na(replace) & is.na(x[1]))) x[1] <- first
-      if(!is.na(replace) & !is.na(x[1])){
-        if(x[1] == replace) x[1] <- first
+    #replace and replacement are the same
+    if(is.na(replace) & is.na(replacement)) return(x)
+    if(!is.na(replace) & !is.na(replacement) & replace == replacement) return(x)
+    
+    if(is.na(replace)){
+      if(replacement == "LOCF"){
+        ind = which(!is.na(x))
       }
-      if(is.na(replace)){ #replace is na
-        if(is.na(replacement)){
-          #where replace and replacement are both NA
-          return(x)
-        }else if(replacement != "LOCF"){
-          x[is.na(x)] <- replacement
-          return(x)
-        }
-      }else if(!is.na(replacement)){ #replace has real value, but replacement is not LOCF
-        if(replacement != "LOCF"){
-          x[x==replace] <- replacement
-          return(x)
-        }
+      if(replacement != "LOCF"){
+        x[is.na(x)] <- replacement
+        return(x)
       }
-      
-      #only options left should be if replace is not NA and replacement is LOCF
-      ind <- numeric(0)
-      if(is.na(replace)){
-        ind <- which(!is.na(x))
-      }else ind <- which(x!=replace)
-          
-      return(rep(x[ind], times = diff(c(ind, length(x) + 1) )))
-  }
+    }else{
+      if(replacement == "LOCF") ind = which(x != replace)
+      if(replacement != "LOCF"){
+        x[x==replace] <- replacement
+        return(x)
+      }
+    }
+    #vectorize LOCF operation and return
+    if(ind[1] != 1){
+      ind <- c(1, ind)
+      x[1] <- first 
+      if(is.na(first) | (!is.na(replace) & replace == first)){
+        warning(paste("X began with the replace value:",replace," and replacement is LOCF. So the beginning of X will have", replace))
+      }
+    }
+    rep(x[ind], times = diff(c(ind, length(x) + 1) ))
+}
     
 #     if(is.array(x)) return(replace_func())
 #     if(is.data.frame(x)) return(lapply(x, replace_func,replace = NA, replacement = "LOCF", first = FALSE))
 
 # 
 #' @describeIn vreplace
-dtreplace <- function(x, replace = NA, replacement = "LOCF", first = NA){
+dtreplace <- function(x, replace = NA, replacement = "LOCF"){
     sapply(x, vreplace, ...)
 }
 

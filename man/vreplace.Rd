@@ -6,7 +6,7 @@
 \usage{
 vreplace(x, replace = NA, replacement = "LOCF", first = NA)
 
-dtreplace(x, replace = NA, replacement = "LOCF", first = NA)
+dtreplace(x, replace = NA, replacement = "LOCF")
 }
 \arguments{
 \item{x}{A numeric vector}
@@ -15,7 +15,7 @@ dtreplace(x, replace = NA, replacement = "LOCF", first = NA)
 
 \item{replacement}{The replacement value, which is Last Observation Carried Forward by default}
 
-\item{first}{If the first value is unknown and LOCF, will fill with first known value unless specified here}
+\item{first}{If LOCF, and the first value is `replace`, subsitute this value}
 }
 \value{
 A vector where all values equal to \code{replace} in \code{x} are replaced with \code{replacement}.

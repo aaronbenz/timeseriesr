@@ -12,8 +12,8 @@
 #' @param as_vector Boolean describing if return value should be the totaled sum or a vector representing area at each `time` value
 #' @param diff_time Boolean describing if `time` is the difference in area, or if it needs to be calculated
 #' @param neg_area Boolean describing if negative area should be measured or it all area is positive
-#' @param na.replace Function that replaces NA values from `value` with Last Observation Carried Forward. See \code{\link{manipulate_replace}}
-#' 
+#' @param na.replace Function that replaces NA values from `value` with Last Observation Carried Forward. See \code{\link{vreplace}}
+#
 #' @return The total area under the curve of `value` with respect to the time measured at `time`
 #' 
 #' @examples
@@ -25,7 +25,7 @@
 #'  calc_area(time, value, diff_time = T)
 #'  calc_area(time, value, neg_area = T)
 #'  calc_area(time, value, T, T)
-calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_area = FALSE, na.replace = manipulate_replace, ...){
+calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_area = FALSE, na.replace = vreplace, ...){
     #excepting time_date and value to be numeric vectors of the same length
     stopifnot(length(time_date) == length(value),
               is.numeric(time_date), is.numeric(value),
