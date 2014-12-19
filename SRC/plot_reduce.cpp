@@ -27,36 +27,42 @@ using namespace Rcpp;
 //' point_reduce(sin(seq(1,100,.001)),.01)
 // [[Rcpp::export]]
 List point_reduce(NumericVector x, double tolerance){
-    std::vector<int> index;
-    std::vector<double> values;
-    std::vector<double> wtf;
-    double tmp = .0001;   
+    NumericVector::iterator it, x_it;
+    std::vector<int> out;
+    double tmp;   
     double tol = (max(x) - min(x)) * tolerance;
-
-    index.push_back(1);//take first value in the vector always
-    values.push_back(x[0]);
     
-    for (int i = 1; i < x.size(); i++) {
-        tmp = values.back() - x[i];
+    x_it = x.begin();
+    out.push_back(1);
+    it = x_it;
+    for (int i = 0; it < x.end(); ++it, i++) {
+        tmp = *x_it - *it;
         if(tmp < 0){
             tmp = tmp * -1;
         } 
         if(tmp > tol){ //#bug with abs() when numbers are less than 1, using comparitor above instead
-            index.push_back(i+1);
-            values.push_back(x[i]);
-        }else{
-            wtf.push_back(abs(values.back() - x[i]));
+            ++x_it;
+            *x_it = *it;
+            out.push_back(i+1);
         }
     }
     
-    
-    //if last value is not there, add it as we want to maintain endpoints always
-    if(index.back() != x.size()){
-        index.push_back(x.size());
-        values.push_back(x[x.size() - 1]);
+    if(*x_it != x(x.size()-1)){
+      ++x_it;
+      *x_it = x(x.size()-1);
+      out.push_back(x.size());
     }
-
-    return List::create(_["index"] = index, _["values"] = values);
+      ++x_it; //want everything between begining and x_it
+      NumericVector out_val(std::distance(x.begin(),x_it));
+      NumericVector::iterator out_it;
+      out_it = out_val.begin();
+      it = x.begin();
+      while(it < x_it){
+        *out_it = *it;
+        ++out_it;
+        ++it;
+      }
+      return List::create(_["index"] = out, _["values"] = out_val);
 }
 
 //' De-duplicates a numeric vector/data.table/data.frame
