@@ -59,3 +59,14 @@ List point_reduce(NumericVector x, double tolerance){
 }
 
 
+// [[Rcpp::export]]
+RcppExport SEXP vdedeuplicate( SEXP x){
+      Rcpp::NumericVector xout(0);
+      xout.push_back(x[0]);
+      for(int i = 1; i < x.size(); i ++){
+        if(x[i] != xout.back()){
+          xout.push_back(x[i]);
+        }
+      }
+      return xout;
+}

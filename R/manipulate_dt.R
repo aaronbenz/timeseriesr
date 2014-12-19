@@ -70,16 +70,22 @@ dtreplace <- function(x, replace = NA, replacement = "LOCF"){
     sapply(x, vreplace, ...)
 }
 
-vdeduplicate <- function(vec){
-    stopifnot(vector(vec))
+#' Reduces the vector/data.frame/data.table by removing duplicate values
+#' @description This function takes a vector or data.table/data.frame and reduces it by removing 
+#' duplicate values. For data.frames/datatables, you may also supply a dependent vector (such as time) 
+#' that will reduce down according to each variable
+#' 
+#' @param x
+vdeduplicate <- function(x){
+    stopifnot(vector(x))
     
-    dt_dedup <- rbindlist(list(dt[c(1,diff(dt[[column]]))!=0],dt[nrow(dt)]))
+    dt_dedup <- rbindlist(list(x[c(1,diff(x[[column]]))!=0],x[length(x)]))
 #     return(dt_dedup)
     return(dt_dedup[!duplicated(dt_dedup,by=NULL)])
 }
 
-dtdeduplicate <- function(dt,column){
-  dt_dedup <- rbindlist(list(dt[c(1,diff(dt[[column]]))!=0],dt[nrow(dt)]))
+dtdeduplicate <- function(x,column){
+  dt_dedup <- rbindlist(list(x[c(1,diff(x[[column]]))!=0],x[nrow(x)]))
   #     return(dt_dedup)
   return(dt_dedup[!duplicated(dt_dedup,by=NULL)])
 }

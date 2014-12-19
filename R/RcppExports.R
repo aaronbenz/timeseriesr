@@ -21,3 +21,7 @@ point_reduce <- function(x, tolerance) {
     .Call('timeseriesr_point_reduce', PACKAGE = 'timeseriesr', x, tolerance)
 }
 
+vdedeuplicate <- function(x) {
+    .Call('timeseriesr_vdedeuplicate', PACKAGE = 'timeseriesr', x)
+}
+

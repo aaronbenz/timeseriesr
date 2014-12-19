@@ -21,3 +21,18 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// vdedeuplicate
+RcppExport SEXP vdedeuplicate(SEXP x);
+RcppExport SEXP timeseriesr_vdedeuplicate(SEXP xSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< SEXP >::type x(xSEXP );
+        RcppExport SEXP __result = vdedeuplicate(x);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
