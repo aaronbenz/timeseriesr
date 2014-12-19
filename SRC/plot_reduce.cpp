@@ -6,6 +6,7 @@
 //
 //
 #include <Rcpp.h>
+#include <algorithm>
 //#include "plot_reduce.h"
 using namespace Rcpp;
 //' Reduce the number of points needed to plot time series data
@@ -58,15 +59,32 @@ List point_reduce(NumericVector x, double tolerance){
     return List::create(_["index"] = index, _["values"] = values);
 }
 
-
+//' De-duplicates a numeric vector/data.table/data.frame
+//' @description These set of functions take a vector, or a datatable/dataframe (with a particular column)
+//' and compress it by de-duplicating its values. Ideally, this is a good way to reduce the amount of data
+//' for time-series use cases
+//' 
+//' @param x A vector/data.table/data.frame
+//' @param column If using a data.table/data.frame, the index for performing the operation on
+//' 
+//' @return Returns a vector/data.table/data.frame that has been de-deduplicated. 
+//' De-duplicated means that consecutive duplicate values are reduced to the first occurance. 
+//' 
+//' @examples
+//' vec <- c(1,1,2,2,3,3,4,4,5,5,4,4,3,3,2,2,1,1)
+//' vdeduplicate(vec)
 // [[Rcpp::export]]
-RcppExport SEXP vdedeuplicate( SEXP x){
-      Rcpp::NumericVector xout(0);
-      xout.push_back(x[0]);
-      for(int i = 1; i < x.size(); i ++){
-        if(x[i] != xout.back()){
-          xout.push_back(x[i]);
-        }
+NumericVector vdeduplicate(NumericVector x){
+      NumericVector::iterator it, out_it, i;
+      it = std::unique (x.begin(), x.end());
+      NumericVector out(std::distance(x.begin(),it));
+      
+      //Loops through using iterators
+      //Because the values that we want are at x[0] (aka *x.begin()) and go to where 'it' left off
+      //We just need to get the value of all the pointers between those to pointers
+      for(i = x.begin(),out_it = out.begin(); i != it; ++i, ++out_it){
+        *out_it = *i;
       }
-      return xout;
+      return out;      
 }
+

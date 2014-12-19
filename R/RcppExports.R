@@ -21,7 +21,21 @@ point_reduce <- function(x, tolerance) {
     .Call('timeseriesr_point_reduce', PACKAGE = 'timeseriesr', x, tolerance)
 }
 
-vdedeuplicate <- function(x) {
-    .Call('timeseriesr_vdedeuplicate', PACKAGE = 'timeseriesr', x)
+#' De-duplicates a numeric vector/data.table/data.frame
+#' @description These set of functions take a vector, or a datatable/dataframe (with a particular column)
+#' and compress it by de-duplicating its values. Ideally, this is a good way to reduce the amount of data
+#' for time-series use cases
+#' 
+#' @param x A vector/data.table/data.frame
+#' @param column If using a data.table/data.frame, the index for performing the operation on
+#' 
+#' @return Returns a vector/data.table/data.frame that has been de-deduplicated. 
+#' De-duplicated means that consecutive duplicate values are reduced to the first occurance. 
+#' 
+#' @examples
+#' vec <- c(1,1,2,2,3,3,4,4,5,5,4,4,3,3,2,2,1,1)
+#' vdeduplicate(vec)
+vdeduplicate <- function(x) {
+    .Call('timeseriesr_vdeduplicate', PACKAGE = 'timeseriesr', x)
 }
 
