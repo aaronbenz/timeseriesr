@@ -133,10 +133,18 @@ manipulate_subset_dt <- function(dt, beg_times, end_times, roll_beginning = F, r
     if(sum(names(dt_use) %in% "group_by_group")==1) dt_use[,group_by_group := NULL]
     return(dt_use) #return subset between new time_date periods
 }
-
-is.empty <- function (dt) 
+#' See if value is empty
+#' @description This function simply checks to see if an item contains anything. Specifically, it checks
+#' if it is null, has rows, or columns.
+#' @param x An R object
+#' @details This is not meant for classes like lm. Only for plain old everyday boring R objects
+#' @examples
+#' is.empty(1:5)
+#' is.empty((1:9,3,3)) 
+#' is.empty(NULL)
+is.empty <- function (x) 
 {
-    (is.null(dt) || nrow(dt) == 0 || ncol(dt) == 0)
+    (is.null(x) || nrow(x) == 0 || ncol(x) == 0)
 }
 #merges the list of data.tables together that are from the hbase/local data pull
 #accepts a list of data.tables, or a list structure that eventually consist of data.tables
@@ -246,7 +254,8 @@ manipulate_merge_list<- function(x, time_column, merge = TRUE, attribute_to_fiel
 }
 
 #reduce points for graphing of a column
-manipulate_reduce_points <- function(dt, column, tolerance = .01){
+#'@describeIn reduce_points
+dtreduce <- function(dt, column, tolerance = .01){
     array <- as.numeric(dt[[column]])
     
     #creates the realitive tolerance for the specified column
