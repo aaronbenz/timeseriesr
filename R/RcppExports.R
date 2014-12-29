@@ -27,6 +27,7 @@ point_reduce <- function(x, tolerance) {
 #' for time-series use cases
 #' 
 #' @param x A vector/data.table/data.frame
+#' @param returnIndex If TRUE, will return indexes, otherwise will return actual values
 #' @param column If using a data.table/data.frame, the index for performing the operation on
 #' 
 #' @return Returns a vector/data.table/data.frame that has been de-deduplicated. 
@@ -35,7 +36,8 @@ point_reduce <- function(x, tolerance) {
 #' @examples
 #' vec <- c(1,1,2,2,3,3,4,4,5,5,4,4,3,3,2,2,1,1)
 #' vdeduplicate(vec)
-vdeduplicate <- function(x) {
-    .Call('timeseriesr_vdeduplicate', PACKAGE = 'timeseriesr', x)
+#' vdeduplicate(vec, TRUE)
+vdeduplicate <- function(x, returnIndex = FALSE) {
+    .Call('timeseriesr_vdeduplicate', PACKAGE = 'timeseriesr', x, returnIndex)
 }
 

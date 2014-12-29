@@ -22,14 +22,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // vdeduplicate
-NumericVector vdeduplicate(NumericVector x);
-RcppExport SEXP timeseriesr_vdeduplicate(SEXP xSEXP) {
+NumericVector vdeduplicate(NumericVector x, bool returnIndex = false);
+RcppExport SEXP timeseriesr_vdeduplicate(SEXP xSEXP, SEXP returnIndexSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP );
-        NumericVector __result = vdeduplicate(x);
+        Rcpp::traits::input_parameter< bool >::type returnIndex(returnIndexSEXP );
+        NumericVector __result = vdeduplicate(x, returnIndex);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

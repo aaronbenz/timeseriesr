@@ -32,6 +32,7 @@ vreplace <- function(x, replace = NA, replacement = "LOCF", first = NA){
     #will replace NAs with LOCF, if like to be handled differently, do before this function
     #otherwise, will by default replace value with LOCF unless a number or other value is specified
     #replace and replacement are the same
+  
     if(is.na(replace) & is.na(replacement)) return(x)
     if(!is.na(replace) & !is.na(replacement) & replace == replacement) return(x)
     
@@ -55,7 +56,7 @@ vreplace <- function(x, replace = NA, replacement = "LOCF", first = NA){
       ind <- c(1, ind)
       x[1] <- first 
       if(is.na(first) | (!is.na(replace) & replace == first)){
-        warning(paste("X began with the replace value:",replace," and replacement is LOCF. So the beginning of X will have", replace))
+        warning(paste("The first non NA value in X is the replace value:",replace," and replacement is LOCF. So the beginning of X will have NAs"))
       }
     }
     rep(x[ind], times = diff(c(ind, length(x) + 1) ))
@@ -67,10 +68,10 @@ vreplace <- function(x, replace = NA, replacement = "LOCF", first = NA){
 # 
 #' @describeIn vreplace
 dtreplace <- function(x, replace = NA, replacement = "LOCF"){
-    sapply(x, vreplace, ...)
+    rbind.data.frame(lapply(x, vreplace, replace = replace, replacement = replacement))
 }
 
-dtdeduplicate <- function(x,column){
+dtdeduplicate <- function(x,key){
   dt_dedup <- rbindlist(list(x[c(1,diff(x[[column]]))!=0],x[nrow(x)]))
   #     return(dt_dedup)
   return(dt_dedup[!duplicated(dt_dedup,by=NULL)])
@@ -254,7 +255,7 @@ manipulate_merge_list<- function(x, time_column, merge = TRUE, attribute_to_fiel
 }
 
 #reduce points for graphing of a column
-#'@describeIn reduce_points
+#'@describeIn point_reduce
 dtreduce <- function(dt, column, tolerance = .01){
     array <- as.numeric(dt[[column]])
     

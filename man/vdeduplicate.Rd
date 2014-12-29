@@ -3,16 +3,14 @@
 \alias{vdeduplicate}
 \title{De-duplicates a numeric vector/data.table/data.frame}
 \usage{
-vdeduplicate(x)
-
-vdeduplicate(x)
+vdeduplicate(x, returnIndex = FALSE)
 }
 \arguments{
 \item{x}{A vector/data.table/data.frame}
 
-\item{column}{If using a data.table/data.frame, the index for performing the operation on}
+\item{returnIndex}{If TRUE, will return indexes, otherwise will return actual values}
 
-\item{x}{}
+\item{column}{If using a data.table/data.frame, the index for performing the operation on}
 }
 \value{
 Returns a vector/data.table/data.frame that has been de-deduplicated.
@@ -22,13 +20,10 @@ De-duplicated means that consecutive duplicate values are reduced to the first o
 These set of functions take a vector, or a datatable/dataframe (with a particular column)
 and compress it by de-duplicating its values. Ideally, this is a good way to reduce the amount of data
 for time-series use cases
-
-This function takes a vector or data.table/data.frame and reduces it by removing
-duplicate values. For data.frames/datatables, you may also supply a dependent vector (such as time)
-that will reduce down according to each variable
 }
 \examples{
 vec <- c(1,1,2,2,3,3,4,4,5,5,4,4,3,3,2,2,1,1)
 vdeduplicate(vec)
+vdeduplicate(vec, TRUE)
 }
 
