@@ -77,6 +77,8 @@ dtdeduplicate <- function(x,key){
   x[indexes,]
 }
 
+##WANT to add a denormalize function that splits a dt in lists
+
 #given some datatable dt, return 
 manipulate_subset_dt <- function(dt, beg_times, end_times, roll_beginning = F, roll_end = T, time_index = "time_date",group_by = NA){ #dt must contain a column of time_date
     #dealing with beg_time
@@ -257,29 +259,34 @@ manipulate_merge_list<- function(x, time_column, merge = TRUE, attribute_to_fiel
 #reduce points for graphing of a column
 #'@describeIn point_reduce
 dtreduce <- function(dt, column, tolerance = .01){
-    array <- as.numeric(dt[[column]])
-    
-    #creates the realitive tolerance for the specified column
-    tolerance_range <- (max(array) - min(array)) * tolerance
-    
-    
-    currentValue <- array[1]
-    rowKeep <- c(1)
-    rowKeep_last <- length(array)
-    i<-2
-    while(i < length(array)){
-        #increase<- ifelse(length(array)-i>segments,segments,length(array)-i)
-        temp <- which(abs(array[i:length(array)]-currentValue)>tolerance_range)[1]
-        if(is.na(temp)){
-            i <- length(array) + 1
-        }else{
-            i <- i + temp - 1
-            rowKeep[length(rowKeep)+1] <- i
-            currentValue <- array[i]
-        }
-    }
-    return(dt[c(rowKeep,rowKeep_last)]) 
+  index <- point_reduce(dt[[column]], tolerance = tolerance)$index
+  dt[index,]
 }
+#This is the old version that is nice to keep around only for comparisson of speed difference
+# dtreduce <- function(dt, column, tolerance = .01){
+#     array <- as.numeric(dt[[column]])
+#     
+#     #creates the realitive tolerance for the specified column
+#     tolerance_range <- (max(array) - min(array)) * tolerance
+#     
+#     
+#     currentValue <- array[1]
+#     rowKeep <- c(1)
+#     rowKeep_last <- length(array)
+#     i<-2
+#     while(i < length(array)){
+#         #increase<- ifelse(length(array)-i>segments,segments,length(array)-i)
+#         temp <- which(abs(array[i:length(array)]-currentValue)>tolerance_range)[1]
+#         if(is.na(temp)){
+#             i <- length(array) + 1
+#         }else{
+#             i <- i + temp - 1
+#             rowKeep[length(rowKeep)+1] <- i
+#             currentValue <- array[i]
+#         }
+#     }
+#     return(dt[c(rowKeep,rowKeep_last),]) 
+# }
 
 
 #return points within specified tolerance percent on column row_reduce, seperating by by_names

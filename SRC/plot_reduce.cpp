@@ -21,12 +21,13 @@ using namespace Rcpp;
 //' values | vector containing the actual values
 //' 
 //' @examples
+//' point_reduce(1001:1100)
 //' point_reduce(1001:1100, .1)
 //' 
 //' #takes a sin curve of 99001 in length and reduces it down to 3008 points
-//' point_reduce(sin(seq(1,100,.001)),.01)
+//' point_reduce(sin(seq(1,100,.001)))
 // [[Rcpp::export]]
-List point_reduce(NumericVector x, double tolerance){
+List point_reduce(NumericVector x, double tolerance = .01){
     //it, whatever it is currently pointing at in a loop, aka the iterator
     //x_it, the last value in x that we want to keep. So it gets updated when there is a new unique value given by it
     NumericVector::iterator it, x_it;

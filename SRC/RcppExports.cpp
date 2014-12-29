@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // point_reduce
-List point_reduce(NumericVector x, double tolerance);
+List point_reduce(NumericVector x, double tolerance = .01);
 RcppExport SEXP timeseriesr_point_reduce(SEXP xSEXP, SEXP toleranceSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;

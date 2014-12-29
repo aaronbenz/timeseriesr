@@ -13,11 +13,12 @@
 #' values | vector containing the actual values
 #' 
 #' @examples
+#' point_reduce(1001:1100)
 #' point_reduce(1001:1100, .1)
 #' 
 #' #takes a sin curve of 99001 in length and reduces it down to 3008 points
-#' point_reduce(sin(seq(1,100,.001)),.01)
-point_reduce <- function(x, tolerance) {
+#' point_reduce(sin(seq(1,100,.001)))
+point_reduce <- function(x, tolerance = .01) {
     .Call('timeseriesr_point_reduce', PACKAGE = 'timeseriesr', x, tolerance)
 }
 
