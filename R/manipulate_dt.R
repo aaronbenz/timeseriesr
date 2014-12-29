@@ -288,28 +288,6 @@ dtreduce <- function(dt, column, tolerance = .01){
 #     return(dt[c(rowKeep,rowKeep_last),]) 
 # }
 
-
-#return points within specified tolerance percent on column row_reduce, seperating by by_names
-manipulate_reduce_points_dt <- function(dt,  column, tolerance = .01,group_by = NULL){
-  names_dt <- names(dt)
-  if(is.numeric(column)) column <- names(dt)[column]
-  if(is.null(group_by)) return(manipulate_reduce_points(dt, column, tolerance)) #if no group_by
-    setkeyv(dt,group_by)
-    names <- dt[,list(1),group_by]
-    names[,V1:=NULL]
-    lst <- list()
-    
-    for(i in 1:nrow(names)) {
-#         lst[[length(lst)+1]] <- filter_diff(dt[J(names[i])],column,tolerance)
-      lst[[length(lst)+1]] <- manipulate_reduce_points(dt[J(names[i])],column,tolerance)
-      
-    }
-    new_dt <- rbindlist(lst)
-    setcolorder(new_dt, names_dt)
-    return(new_dt)
-}
-
-
 #melts data table and reduces where there are duplicate id-meltedcolumn groups. For time_date, this will 
 manipulate_melt_dt <- function(dt, id_var, melt_columns, time_column, melted_value_name = "value", 
                    melted_column_name = "metric_name", reduce = TRUE, ...){
@@ -345,7 +323,17 @@ manipulate_melt_dt <- function(dt, id_var, melt_columns, time_column, melted_val
     setnames(newDT,"time_date",time_column)
     return(newDT)
 }
-manipulate_return_next <- function(x, end_value = "Last"){
+
+#' Retern a vector that is offset by one
+#' @description This function takes a vector x from 1 to N , and returns it from 2 to N, and N+1. This mainly used
+#' for short hand purposes in other functions
+#' @param x A vector
+#' @param end_value The last value to add on to the vector, since it will be one short of the original `x`
+#' @examples
+#' tmp <- 1:10
+#' vnext(tmp)
+#' vnext(temp, end_value = 0)
+vnext <- function(x, end_value = "Last"){
     if(end_value == "Last") end_value <- x[length(x)]
     if(class(x) != class(end_value)) warning("end_value is not the same class as x")
     

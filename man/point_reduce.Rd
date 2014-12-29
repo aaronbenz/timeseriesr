@@ -4,7 +4,7 @@
 \alias{point_reduce}
 \title{Reduce the number of points needed to plot time series data}
 \usage{
-point_reduce(x, tolerance)
+point_reduce(x, tolerance = 0.01)
 
 dtreduce(dt, column, tolerance = 0.01)
 }
@@ -27,9 +27,10 @@ range and will return all of the critical points/indexes over that range
 \item \code{}: 
 }}
 \examples{
+point_reduce(1001:1100)
 point_reduce(1001:1100, .1)
 
 #takes a sin curve of 99001 in length and reduces it down to 3008 points
-point_reduce(sin(seq(1,100,.001)),.01)
+point_reduce(sin(seq(1,100,.001)))
 }
 
