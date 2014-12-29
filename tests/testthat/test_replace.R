@@ -1,5 +1,6 @@
 #vreplace and dtreplace, and deduplicate
 #setup
+library(data.table)
 dt <- data.frame("num1" = 1:10,
                  "num2" = c(1,2,3,NA,NA,6,7,8,9,10),
                  "num3" = c(NA,2:10),
@@ -23,8 +24,11 @@ test_that("Test vreplace",{
 
 #test deduplicate
 tmp <- c(rep(1,10),rep(2,10),rep(3,10),rep(4,10),rep(5,10), 1,2,3)
-
+dt <- data.frame("time" = 1:53,
+                 "value" = tmp)
+dt2 <- data.table(dt)
 test_that("Test deduplicate",{
   expect_equal(vdeduplicate(tmp), c(1,2,3,4,5,1,2,3))
   expect_equal(vdeduplicate(tmp, TRUE), c(1,11,21,31,41,51,52,53))
+  expect_equal(data.table(dtdeduplicate(dt,2)),dtdeduplicate(dt2,2))
  })

@@ -71,10 +71,10 @@ dtreplace <- function(x, replace = NA, replacement = "LOCF"){
     rbind.data.frame(lapply(x, vreplace, replace = replace, replacement = replacement))
 }
 
+#' @describeIn vdeduplicate
 dtdeduplicate <- function(x,key){
-  dt_dedup <- rbindlist(list(x[c(1,diff(x[[column]]))!=0],x[nrow(x)]))
-  #     return(dt_dedup)
-  return(dt_dedup[!duplicated(dt_dedup,by=NULL)])
+  indexes <- vdeduplicate(x[[key]],returnIndex = TRUE)
+  x[indexes,]
 }
 
 #given some datatable dt, return 

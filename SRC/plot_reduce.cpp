@@ -107,7 +107,7 @@ template <class ForwardIterator> ForwardIterator uniqueIndex (ForwardIterator fi
 //' 
 //' @param x A vector/data.table/data.frame
 //' @param returnIndex If TRUE, will return indexes, otherwise will return actual values
-//' @param column If using a data.table/data.frame, the index for performing the operation on
+//' @param key If using a data.table/data.frame, the index for performing the operation on
 //' 
 //' @return Returns a vector/data.table/data.frame that has been de-deduplicated. 
 //' De-duplicated means that consecutive duplicate values are reduced to the first occurance. 
