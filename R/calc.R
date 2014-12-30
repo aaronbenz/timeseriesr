@@ -61,7 +61,7 @@ calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_a
 prep_ts <- function (dt, times, time = "time", group_by = NULL){
   #if times is numeric, change to its proper string
   if(is.numeric(time)){
-    stopifnot(time <= length(times))
+    if(time <= length(times)) stop(paste("There is no time column in dt called:",time))
     time = names(dt)[time]
   } 
   #quick checks
@@ -78,6 +78,23 @@ prep_ts <- function (dt, times, time = "time", group_by = NULL){
   }else added_ts  <- data.frame(times)
   setnames(added_ts, length(added_ts), time) #set name of times column to match original in dt
   return(added_ts)
+}
+
+#' Shorthand for getting indexes of a longer string
+#' @description Shorthand function for getting indexes of a shorter string on a longer string. Can use to get indexes
+#' of the names of a data.frame/data.table
+#' @param str_lng A Character Vector
+#' @param str_shrt A Character Vector
+#' @examples
+#' index_from_string(letters, c('f','g','y'))
+index_from_string <- function(str_lng, str_shrt){
+  stopifnot(is.character(str_lng),
+            is.character(str_shrt))
+  
+  idx <- str_lng %in% str_shrt
+  if(sum(idx) != length(str_shrt)) stop("Missing names in str_lng")
+  
+  which(idx)
 }
 
 #return area by time_date stamps
