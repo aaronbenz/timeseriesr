@@ -51,6 +51,35 @@ calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_a
     }
 }
 
+#' Create a group of times endpoints for all groups to merge into existing dataset
+#' @description This function takes a set of times and a data.frame/data.table, and returns a data.frame that creates a time
+#' for every unique group specified by `group_by` from `dt`
+#' @param dt A data.frame/data.table
+#' @param times A vector of times to be added
+#' @param time The name or index of the time column
+#' @param group_by An index or string of the columns that serve as groups
+create_ts_groups <- function (dt, times, time = "time", group_by = NULL){
+  #if times is numeric, change to its proper string
+  if(is.numeric(time)){
+    stopifnot(time <= length(times))
+    time = names(dt)[time]
+  } 
+  #quick checks
+  stopifnot(sum(which(names(times) == time)) > 0,
+            !is.na(group_by),
+            !is.data.frame(dt))
+  
+  
+  if(!is.null(group_by)){ #if groups
+    groups <- dt %>%
+      dplyr::select(group_by) %>%
+      dplyr::distinct()
+    added_ts <- expand.grid.df(data.frame(groups), data.frame(time = times))
+  }else added_ts  <- data.frame(time = times)
+  setnames(added_ts, "times", time)
+  return(added_ts)
+}
+
 #return area by time_date stamps
 calc_area_intervals = function(dt, time_index, value_index, beg_times, end_times, group_by = NULL, hours = FALSE){
     stopifnot(is.data.table(dt), length(beg_times) == length(end_times))
@@ -149,4 +178,5 @@ calc_area_intervals = function(dt, time_index, value_index, beg_times, end_times
 calc_time_range = function(dt, col_name = "time_date") {
     return(paste(c(as.POSIXct(min(dt[[col_name]]),origin = "1970-01-01")),' - ',as.POSIXct(max(dt[[col_name]]),origin = "1970-01-01")))
 }
+
 
