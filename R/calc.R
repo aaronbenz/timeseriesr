@@ -58,25 +58,25 @@ calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_a
 #' @param times A vector of times to be added
 #' @param time The name or index of the time column
 #' @param group_by An index or string of the columns that serve as groups
-create_ts_groups <- function (dt, times, time = "time", group_by = NULL){
+prep_ts <- function (dt, times, time = "time", group_by = NULL){
   #if times is numeric, change to its proper string
   if(is.numeric(time)){
     stopifnot(time <= length(times))
     time = names(dt)[time]
   } 
   #quick checks
-  stopifnot(sum(which(names(times) == time)) > 0,
+  stopifnot(sum(which(names(dt) == time)) > 0,
             !is.na(group_by),
-            !is.data.frame(dt))
+            is.data.frame(dt))
   
   
   if(!is.null(group_by)){ #if groups
     groups <- dt %>%
       dplyr::select(group_by) %>%
       dplyr::distinct()
-    added_ts <- expand.grid.df(data.frame(groups), data.frame(time = times))
-  }else added_ts  <- data.frame(time = times)
-  setnames(added_ts, "times", time)
+    added_ts <- expand.grid.df(data.frame(groups), data.frame(times))
+  }else added_ts  <- data.frame(times)
+  setnames(added_ts, length(added_ts), time) #set name of times column to match original in dt
   return(added_ts)
 }
 
