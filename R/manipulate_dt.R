@@ -288,56 +288,37 @@ dtreduce <- function(dt, column, tolerance = .01){
 #     return(dt[c(rowKeep,rowKeep_last),]) 
 # }
 
-#melts data table and reduces where there are duplicate id-meltedcolumn groups. For time_date, this will 
-manipulate_melt_dt <- function(dt, id_var, melt_columns, time_column, melted_value_name = "value", 
-                   melted_column_name = "metric_name", reduce = TRUE, ...){
-    if(is.null(melt_columns)) return(dt$merged_dt)  
-    dt <- unlist(list(dt),recursive=F)
-    
-    #replacing all column names of time to be time_date for ease of use within functions
-    id_var[id_var == time_column] <- "time_date"
-    setnames(dt$merged_dt,time_column,"time_date")
-    for(i in dt$variables) setnames(i,time_column,"time_date")
-    #determine which variables were calculated as the names differ between merged_dt and variables in dt
-    rbind_names <- melt_columns[melt_columns %in% names(dt$variables)]
-    new_names <- melt_columns[!melt_columns%in%rbind_names]
-   lst <- list()
-    #rbinding all variables from original pull (the ones that we originally pulled from hbase that are deduplicated)
-    for(i in rbind_names){
-#         dt$variables[[i]]$units <- attr(dt$variables[[i]], "unit_short")[[length(attr(dt$variables[[i]], "unit_short"))]]
-        dt$variables[[i]]$metric_name <- i
-        setnames(dt$variables[[i]], i, melted_value_name)
-        setcolorder(dt$variables[[i]], c(id_var,melted_value_name,melted_column_name))
-        lst[[length(lst)+1]] <- dt$variables[[i]]
-    }
-    #add any new variables to the new DT variable
-    for(i in new_names){
-#         unit <- attr(dt$merged_dt, "unit_short")[which(names(dt$merged_dt)== i)]
-        temp_dt <- dt$merged_dt[,column_index(dt$merged_dt,id_var), with=F]
-        temp_dt[[melted_column_name]] <- i
-        temp_dt[[melted_value_name]] <- dt$merged_dt[[i]]
-        lst[[length(lst)+1]] <- temp_dt
-        setcolorder(lst[[length(lst)]], c(id_var,melted_value_name,melted_column_name))
-    }
-    newDT <- rbindlist(lst)
-    setnames(newDT,"time_date",time_column)
-    return(newDT)
-}
-
 #' Retern a vector that is offset by one
 #' @description This function takes a vector x from 1 to N , and returns it from 2 to N, and N+1. This mainly used
 #' for short hand purposes in other functions
 #' @param x A vector
-#' @param end_value The last value to add on to the vector, since it will be one short of the original `x`
+#' @param offset An integer 
+#' @param end_value The last value to add on to the vector, since it will be one short of the original `x`. NULL to not add anything on
 #' @examples
 #' tmp <- 1:10
-#' vnext(tmp)
-#' vnext(temp, end_value = 0)
-vnext <- function(x, end_value = "Last"){
-    if(end_value == "Last") end_value <- x[length(x)]
-    if(class(x) != class(end_value)) warning("end_value is not the same class as x")
+#' voffset(tmp)
+#' voffset(temp, end_value = 0)
+voffset <- function(x, offset = 1, end_value = "Last"){
+    stopifnot(is.integer(offset) | is.numeric(offset),
+              is.vector(x),
+              !is.na(end_value))
+    if(end_value == "Last") end_value <- x[length(x)] #special case
     
-    if(length(x)>1) return(c(x[2:length(x)],end_value))
+    if(class(x) != class(end_value) & !is.null(end_value)) warning(paste("end_value class:",class(end_value),"is not the same as x class:",class(x)))
+    
+    if(length(x)>offset){
+      if(is.null(end_value)) return (x[offset])
+      return(c(x[(offset+1):length(x)],rep(end_value,offset)))
+    } 
     return(c(0))
 }
+
+#' Expands a list of data.frames, like expand.grid
+#' @param ... Takes a series of data.frames
+#' @examples
+#' df1 = data.frame(1:10, letters[1:10])
+#' df2 = data.frame(101:110)
+#' expand.grid.df(df1,df2)
+#' expand.grid.df(df1,data.frame(20:22))
+expand.grid.df <- function(...) Reduce(function(...) merge(..., by=NULL), list(...))
 
