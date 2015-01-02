@@ -51,22 +51,30 @@ calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_a
     }
 }
 
-#' Create a group of times endpoints for all groups to merge into existing dataset
-#' @description This function takes a set of times and a data.frame/data.table, and returns a data.frame that creates a time
+#' Create a group of new_times endpoints for all groups to merge into existing dataset
+#' @description This function takes a set of new_times and a data.frame/data.table, and returns a data.frame that creates a time
 #' for every unique group specified by `group_by` from `dt`
 #' @param dt A data.frame/data.table
-#' @param times A vector of times to be added
-#' @param time The name or index of the time column
+#' @param new_times A vector of new_times to be added
+#' @param time_col The name or index of the time_col column
 #' @param group_by An index or string of the columns that serve as groups
-prep_ts <- function (dt, times, time = "time", group_by = NULL){
-  #if times is numeric, change to its proper string
-  if(is.numeric(time)){
-    if(time <= length(times)) stop(paste("There is no time column in dt called:",time))
-    time = names(dt)[time]
+#' @examples
+#' dt <- data.table("times" = seq(1,5,length.out = 10), value = letters[1:10], grouper1 = c(rep("a",5), rep("b",5)))
+#' prep_ts(dt,c(3.2,4.4),"times","grouper1")
+prep_ts <- function (dt, new_times, time_col = "time_col", group_by = NULL){
+  #if new_times is numeric, change to its proper string
+  if(is.numeric(time_col)){
+    if(time_col > length(dt) | time_col <= 0) stop(paste("Gave time_col index as",time_col,", but dt is only",length(dt),"long"))
+    time_col = names(dt)[time_col]
   } 
+  if(!time_col %in% names(dt)) stop(paste(time_col,"is not in dt"))
+  if(is.numeric(group_by)){
+    if(sum(group_by > length(dt)) != length(group_by)) stop("group_by fields are out of bounds")
+  }else{
+    if(!is.null(group_by)) group_by = str_i(names(dt),group_by)
+  }
   #quick checks
-  stopifnot(sum(which(names(dt) == time)) > 0,
-            !is.na(group_by),
+  stopifnot(!is.na(group_by),
             is.data.frame(dt))
   
   
@@ -74,10 +82,39 @@ prep_ts <- function (dt, times, time = "time", group_by = NULL){
     groups <- dt %>%
       dplyr::select(group_by) %>%
       dplyr::distinct()
-    added_ts <- expand.grid.df(data.frame(groups), data.frame(times))
-  }else added_ts  <- data.frame(times)
-  setnames(added_ts, length(added_ts), time) #set name of times column to match original in dt
+    added_ts <- expand.grid.df(data.frame(groups), data.frame(new_times))
+  }else added_ts  <- data.frame(new_times)
+  setnames(added_ts, length(added_ts), time_col) #set name of new_times column to match original in dt
   return(added_ts)
+}
+
+
+
+
+#' Add times to an existing data.frame/data.table and have the values filled in by LOCF
+#' @description This function takes a set of times and a data.frame/data.table, and returns a data.table that contains
+#' the original `dt` plus the additional times with actual values. This is extremely helpful for calculating over different
+#' intervals of time.
+#' @inheritParams prep_ts
+#' @details
+#' This function utilizes the power of the data.table package, specifically is "roll" functionality. See \code{\link[data.table]{data.table}}
+#' @examples
+#' dt <- data.table("times" = seq(1,5,length.out = 10), value = letters[1:10], grouper1 = c(rep("a",5), rep("b",5)))
+#' new_times <- c(3.2,4.4)
+#' time_col = "times"
+#' group_by = "grouper1"
+roll_on <- function(dt,new_times, time_col = "time", group_by = NULL,...){
+  if(!is.data.table(dt)) setDT(dt)
+  tmp_ts <- prep_ts(dt,new_times,time_col,group_by = group_by) #get times with groups
+  if(!is.data.table(tmp_ts)) setDT(tmp_ts)
+  
+  #for using a rolling join in data.table, it is important that the roll index column (aka time in this case) is last
+  #the key should be only columns that are in both
+  setkeyv(dt, c(group_by, time_col))
+  setkeyv(tmp_ts, c(group_by, time_col))
+
+  tmp_dt <- dt[tmp_ts,roll=TRUE,...]
+  merge(dt,tmp_dt,all=T,by=names(dt))
 }
 
 #' Shorthand for getting indexes of a longer string
@@ -87,7 +124,7 @@ prep_ts <- function (dt, times, time = "time", group_by = NULL){
 #' @param str_shrt A Character Vector
 #' @examples
 #' index_from_string(letters, c('f','g','y'))
-index_from_string <- function(str_lng, str_shrt){
+str_i <- function(str_lng, str_shrt){
   stopifnot(is.character(str_lng),
             is.character(str_shrt))
   
