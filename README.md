@@ -12,5 +12,5 @@ install.packages("devtools")
 Load devtools and Download timeseriesr package (auth_token is for private repos only)
 ```R
 library(devtools)
-install_github("aaronbenz/timeseries", auth_token = "e8893981609f88e0c682e7f8b1b41aae35fe412d")
+install_github("aaronbenz/timeseries")
 ```
