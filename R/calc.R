@@ -61,7 +61,7 @@ calc_area = function(time_date, value, as_vector = FALSE, diff_time=FALSE, neg_a
 #' @examples
 #' dt <- data.table("times" = seq(1,5,length.out = 10), value = letters[1:10], grouper1 = c(rep("a",5), rep("b",5)))
 #' prep_ts(dt,c(3.2,4.4),"times","grouper1")
-prep_ts <- function (dt, new_times, time_col = "time_col", group_by = NULL){
+prep_ts <- function (dt, new_times, time_col = "time", group_by = NULL){
   #if new_times is numeric, change to its proper string
   if(is.numeric(time_col)){
     if(time_col > length(dt) | time_col <= 0) stop(paste("Gave time_col index as",time_col,", but dt is only",length(dt),"long"))
@@ -98,6 +98,7 @@ prep_ts <- function (dt, new_times, time_col = "time_col", group_by = NULL){
 #' @inheritParams prep_ts
 #' @details
 #' This function utilizes the power of the data.table package, specifically is "roll" functionality. See \code{\link[data.table]{data.table}}
+#' For example, if you wish to roll both ends, add rollends = TRUE as a parameter
 #' @examples
 #' dt <- data.table("times" = seq(1,5,length.out = 10), value = letters[1:10], grouper1 = c(rep("a",5), rep("b",5)))
 #' new_times <- c(3.2,4.4)
@@ -105,7 +106,7 @@ prep_ts <- function (dt, new_times, time_col = "time_col", group_by = NULL){
 #' group_by = "grouper1"
 roll_on <- function(dt,new_times, time_col = "time", group_by = NULL,...){
   if(!is.data.table(dt)) setDT(dt)
-  tmp_ts <- prep_ts(dt,new_times,time_col,group_by = group_by) #get times with groups
+  tmp_ts <- prep_ts(dt = dt,new_times = new_times,time_col = time_col,group_by = group_by) #get times with groups
   if(!is.data.table(tmp_ts)) setDT(tmp_ts)
   
   #for using a rolling join in data.table, it is important that the roll index column (aka time in this case) is last
@@ -135,97 +136,47 @@ str_i <- function(str_lng, str_shrt){
 }
 
 #return area by time_date stamps
-calc_area_intervals = function(dt, time_index, value_index, beg_times, end_times, group_by = NULL, hours = FALSE){
-    stopifnot(is.data.table(dt), length(beg_times) == length(end_times))
-    setkeyv(dt,c(group_by,time_index))
-    areaArray = list()
-    if(class(time_index) == "numeric") if(names(dt)[time_index] != "time_date") setnames(dt, time_index, "time_date")
-    if(class(time_index) == "character") if(time_index != "time_date"){
-      setnames(dt, time_index, "time_date")
-      time_index = "time_date"
-    }
-    #this adds all event values (the new guys that might have not existed before) to every group_by
-    #this allows easier subsetting
-    
-    #this adds a timestamp for every group for [every begging time and every ending time]
-    all_temp_groupbys <- dt[,list(tmp = rep(head(.SD[[time_index]],1),length(beg_times)*2)),by = c(group_by)]
-    setnames(all_temp_groupbys, "tmp", time_index)
-    newTimes <- numeric(0)
-    for(i in seq_len(beg_times)) newTimes <- c(newTimes, beg_times[i],end_times[i]) ##################left off here... gross
-    all_temp_groupbys$time_date <- rep(newTimes, times = nrow(all_temp_groupbys)/length(newTimes))
-    setkeyv(all_temp_groupbys, c(group_by,time_index))
-    all_temp_groupbys <- all_temp_groupbys[!duplicated(all_temp_groupbys)]
-    setkeyv(all_temp_groupbys, c(group_by,time_index))
-    setkeyv(dt, c(group_by,time_index))
-    tmp_dt <- dt[all_temp_groupbys,roll=TRUE, rollends = c(F,T)]
-    setcolorder(tmp_dt, names(dt))
-    dt <- rbindlist(list(tmp_dt, dt))
-    
-    indexes <- which(names(dt) %in% value_index)
-    dt[is.na(dt[[indexes[1]]]), indexes] <-  0
-    
-       setkeyv(dt, c(group_by,time_index))
-       dt[,diff_time := c(diff(time_date),0),by=c(group_by)]
-    
-    
-    setkeyv(dt,c(group_by))
-    #loops through each set of beg_times and end_times and calculates area of variable
-    #if hours is true, will also return idle and run hours
-    if(hours){
-      #loops through each set of beg_times and end_times and calculates area of variable
-      for(i in 1:length(beg_times)){
-        temp = dt[time_date >= beg_times[i] & time_date <= end_times[i]]
-        #takes diff time_date of larger set to minimize re-calculation in each subset
-        if(empty(temp)){ #dealing with times when there is no data between times
-          new_dt = data.table("start" = beg_times[i], "end" = end_times[i], "idle_time" = 0, "run_time" = 0)
-          for(j in 1:length(value_index)){ #calculateArea by each value_index listed
-            new_dt <- cbind(new_dt, 0)
-          }
-          setnames(new_dt, c("start","end","idle_time","run_time", value_index))
-          
-          areaArray[[i]] <- new_dt
-        }
-        else{
-          setkeyv(temp, c(group_by, time_index))
-          #after getting subset, calculate area and store
-          new_dt <- data.table("start" = beg_times[i], "end" = end_times[i], "idle_time" = ((temp[engine_idle_state ==1, sum(diff_time)])),
-                               "run_time" = sum(temp[,list("run_time_hours" = (max(time_date) - min(time_date))),by=c(group_by)]$run_time_hours))
-          for(j in 1:length(value_index)){ #calc_area by each value_index listed
-            new_dt <- cbind(new_dt, calc_area( temp$diff_time,temp[[value_index[j]]],diffTime=TRUE))
-          }
-          setnames(new_dt, c("start","end","idle_time","run_time", value_index))
-          areaArray[[i]] = new_dt
-        }}
-      end_dt <- rbindlist(areaArray)
-      setnames(end_dt, c("start","end","idle_time","run_time", value_index))
-      return(end_dt)
-    }
-    for(i in 1:length(beg_times)){
-      temp = dt[time_date >= beg_times[i] & time_date <= end_times[i]]
-      #takes diff time_date of larger set to minimize re-calculation in each subset
-      if(empty(temp)){ #dealing with times when there is no data between times
-        new_dt <- data.table("start" = beg_times[i], "end" = end_times[i])
-        for(j in 1:length(value_index)){ #calculateArea by each value_index listed
-         new_dt <- cbind(new_dt, 0)
-        }
-        setnames(new_dt, c("start","end",value_index))
-        
-        areaArray[[i]] <- new_dt
-      }
-      else{
-        setkeyv(temp, c(group_by, time_index))
-        #after getting subset, calculate area and store
-        new_dt <- data.table("start" = beg_times[i], "end" = end_times[i])
-        for(j in 1:length(value_index)){ #calc_area by each value_index listed
-          new_dt <- cbind(new_dt, calc_area(temp$diff_time,temp[[value_index[j]]],diffTime=TRUE))
-        }
-        setnames(new_dt, c("start","end",value_index))
-        areaArray[[i]] = new_dt
-      }}
-    end_dt <- rbindlist(areaArray)
-    setnames(end_dt, c("start","end",value_index))
-    return(end_dt)
+#' Calculates the area under a curve between sets of intervals
+#' @description This function takes a data.frame/data.table, and finds the area under the curve of each interval given. 
+#' @inheritParams prep_ts
+#' @param beg_times A vector of times in unix time
+#' @param end_times A vector of times in unix time
+#' @param diff_time A boolean determining if the givin time column is the actual timestamp, or the difference in time
+#' @details
+#' This function enables the area of a curve to be found at multiple intervals. By default, it is using roll_ends = true. So, if there
+#' is a start or end time that is before or after the actual endpoints, the area will be greater/less than what you might expect. Modifications
+#' to allow this to be more robust will be made in the future. 
+#' @examples
+#' dt <- data.table(time = 101:110, value = 1:10, group = c('a','b'))
+#' area_intervals(dt, c(101.5, 105, 109), c(110,110,110), group_by = "group") 
+area_intervals = function(df, beg_times, end_times, time_col = "time", value_col = "value", group_by = NULL, diff_time = FALSE){  
+  if(length(beg_times) != length(end_times)) stop("beg_times and end_times are not the same length")
+  dt <- data.table(df)
+  if(!is.numeric(dt[[value_col]])) stop(paste0("The column '",value_col,"' must be numeric"))
+  
+  #add beg and end times to dt to get true area
+  rbindlist(list(dt, roll_on(dt = dt,new_times = unique(beg_times, end_times),time_col = time_col,group_by = group_by)))
+  setkeyv(dt, c(group_by, time_col))
+  dt <- unique(dt,by = c(group_by, time_col))
+  
+  #set time_col as 'time_date' for easy access and writing with data.table syntax
+  setnames(dt, time_col, "time_date")
+  #make sure the data.table is ordered correctly, and then exclude time_col for faster calcs later
+  setkeyv(dt, c(group_by, "time_date"))
+  setkeyv(dt, group_by)
+  
+  dt[,diff_time := c(diff(time_date),0),by=group_by]
+  
+  dt[,area_block:= diff_time * dt[[value_col]]]
+  out_list <- list()
+  for(i in seq_along(beg_times)){
+    out_list[[i]] <- data.table(beg_times = beg_times[i], end_times = end_times[i],
+                                dt[time_date >= beg_times[i] & time_date <= end_times[i], #every interval of time
+                                   list("area" = sum(area_block)), by = group_by])
+  }
+  return(rbindlist(out_list))
 }
+
 
 
 #returns min and max time_date of a datatable with column 'time_date'

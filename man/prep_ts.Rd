@@ -3,7 +3,7 @@
 \alias{prep_ts}
 \title{Create a group of new_times endpoints for all groups to merge into existing dataset}
 \usage{
-prep_ts(dt, new_times, time_col = "time_col", group_by = NULL)
+prep_ts(dt, new_times, time_col = "time", group_by = NULL)
 }
 \arguments{
 \item{dt}{A data.frame/data.table}

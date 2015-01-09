@@ -3,5 +3,5 @@
 .RData
 .RcppExports.o
 *.so
-*.o
+*.o*
 .DS_Store

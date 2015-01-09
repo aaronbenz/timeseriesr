@@ -21,6 +21,7 @@ intervals of time.
 }
 \details{
 This function utilizes the power of the data.table package, specifically is "roll" functionality. See \code{\link[data.table]{data.table}}
+For example, if you wish to roll both ends, add rollends = TRUE as a parameter
 }
 \examples{
 dt <- data.table("times" = seq(1,5,length.out = 10), value = letters[1:10], grouper1 = c(rep("a",5), rep("b",5)))
