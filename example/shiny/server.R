@@ -12,7 +12,7 @@ print("check")
 shinyServer(function(input, output) {
   dt <- reactive({
     dt <- data.table("index" = 1:input$size, "sin" = sin(seq(0,20,10/input$size*2))[-1])
-    dt[reducePoints(dt$sin,input$tol)$index]
+    dt[point_reduce(dt$sin,input$tol)$index]
   })
 
   output$reduced_points <- renderText(paste(nrow(dt())))
