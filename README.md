@@ -20,15 +20,15 @@ The goal of this package is to provide you with common time-series use cases whi
 
 In the future, I will create a vignette to help you understand how to use this package, but for now, let me introduce you to the main function/algorithm that has inspired this work. 
 
-`dtreduce` and `vreduce` gives you the ability to plot millions of points almost instantly by drastically reducing the total amount of points. In the internet of things, we can often encounter time-stamped sensor data that consists of more points than we have pixels, and there is no reason that we should have to plot millions of points in order to understand what is going on. Lets take a simple using a sin curve:
+`dtreduce` and `vreduce` gives you the ability to plot millions of points almost instantly by drastically reducing the total amount of points. In the internet of things, we can often encounter time-stamped sensor data that consists of more points than we have pixels, and there is no reason that we should have to plot millions of points in order to understand what is going on. Let's take a simple example using a sin curve:
 
 ```r
 ###WARNING: DO NOT TRY TO PRINT/PLOT THIS
 df <- data.frame(time = 1:5e6, value = sin(seq(1,10, length.out = 5e6)))
 ```
-This simple curve is about 60 MBs. If you tried to do a simple `plot(df)`, you will find yourself waiting for minutes to view this simple plot, and that's if your lucky to escape without R crashing. Simple put, unacceptable. 
+This data set is about 60 MBs. If you tried to do a `plot(df)`, you will find yourself waiting for minutes to view this plot, and that's if your lucky to escape without R crashing. Really, just unacceptable.
 
-You could try a sampling method to get say 1 out of every 10 points, and in this case, it would work. However, you would ultimately be unconfident in your result because you could very likely be skipping critical spikes.
+You could try a sampling method to get 1 out of every 10 points, and in this case, it would work. However, you would ultimately be unconfident in your result because you could very likely be skipping critical spikes.
 
 `dtreduce` solves this problem by gathering points of significance given a tolerance that you choose. So, for example:
 ```r
