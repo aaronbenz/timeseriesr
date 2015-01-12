@@ -5,7 +5,7 @@
 #' @description A very fast way to reduce the number of points in a time-series dataset. This algorithm takes a tolerance
 #' range and will return all of the critical points/indexes over that range
 #' 
-#' @param x A numeric vector
+#' @param vec A numeric vector
 #' @param tolerance A decimal representing the percentage of tolerance acceptible
 #' 
 #' @return The value return is a list of two vectors:
@@ -18,8 +18,8 @@
 #' 
 #' #takes a sin curve of 99001 in length and reduces it down to 3008 points
 #' point_reduce(sin(seq(1,100,.001)))
-point_reduce <- function(x, tolerance = .01) {
-    .Call('timeseriesr_point_reduce', PACKAGE = 'timeseriesr', x, tolerance)
+point_reduce <- function(vec, tolerance = .01) {
+    .Call('timeseriesr_point_reduce', PACKAGE = 'timeseriesr', vec, tolerance)
 }
 
 #' De-duplicates a numeric vector/data.table/data.frame

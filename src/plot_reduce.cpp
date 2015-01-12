@@ -13,7 +13,7 @@ using namespace Rcpp;
 //' @description A very fast way to reduce the number of points in a time-series dataset. This algorithm takes a tolerance
 //' range and will return all of the critical points/indexes over that range
 //' 
-//' @param x A numeric vector
+//' @param vec A numeric vector
 //' @param tolerance A decimal representing the percentage of tolerance acceptible
 //' 
 //' @return The value return is a list of two vectors:
@@ -27,9 +27,10 @@ using namespace Rcpp;
 //' #takes a sin curve of 99001 in length and reduces it down to 3008 points
 //' point_reduce(sin(seq(1,100,.001)))
 // [[Rcpp::export]]
-List point_reduce(NumericVector x, double tolerance = .01){
+List point_reduce(NumericVector vec, double tolerance = .01){
     //it, whatever it is currently pointing at in a loop, aka the iterator
     //x_it, the last value in x that we want to keep. So it gets updated when there is a new unique value given by it
+    NumericVector x = clone(vec);
     NumericVector::iterator it, x_it;
     std::vector<int> out; //used to keep the index values
     double tmp;   

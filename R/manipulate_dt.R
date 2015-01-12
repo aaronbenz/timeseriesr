@@ -256,9 +256,27 @@ manipulate_merge_list<- function(x, time_column, merge = TRUE, attribute_to_fiel
     return(lst)
 }
 
-#reduce points for graphing of a column
-#'@describeIn point_reduce
+#' Reduce the amount of points of a data.table/data.frame
+#' @description Takes a data.table/data.frame, and reduces the total set by some tolerance percentage.
+#' This use case applies particularily to large scale timeseries data, so that it only grabs points of
+#' significance.
+#' @param dt A data.table/data.frame
+#' @param column A column name or index
+#' @param tolerance A decimal representation of a percentage
+#' @details This function essentially takes the min and max value from the `column` in the dataset. It then
+#' calculates the value tolerance (vtol), which is `(max - min) * tolerance`. Then it iterates through the result
+#' set, only keeping the next points that are considered outside of the value tolerance with respect to the
+#' last known point. That is, given some f(x) where n is the last recorded point,
+#' `n+1` must satisfy abs(f(n+1) - n) > vtol
+#' @examples
+#' df <- data.frame(x = 1:1000, y = sin(seq(0,10,length.out = 1000)))
+#' df_reduced <- dtreduce(df, "y", tolerance = .01)
+#' plot(df)
+#' plot(df_reduced)
+#' #compare the difference in the two plots. One is much more dense, while the other is able to depict
+#' #nearly the same image with a nearly a fourth of the original data set.
 dtreduce <- function(dt, column, tolerance = .01){
+  if(!is.data.frame(dt)) stop("dt must be a data.frame/data.table")
   index <- point_reduce(dt[[column]], tolerance = tolerance)$index
   dt[index,]
 }
