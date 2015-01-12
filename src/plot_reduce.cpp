@@ -16,18 +16,16 @@ using namespace Rcpp;
 //' @param vec A numeric vector
 //' @param tolerance A decimal representing the percentage of tolerance acceptible
 //' 
-//' @return The value return is a list of two vectors:
-//' index | vector contained indexed values of critical points
-//' values | vector containing the actual values
+//' @return The value returned is a vector consisting of the indexed values that should be kept
 //' 
 //' @examples
 //' point_reduce(1001:1100)
 //' point_reduce(1001:1100, .1)
 //' 
-//' #takes a sin curve of 99001 in length and reduces it down to 3008 points
-//' point_reduce(sin(seq(1,100,.001)))
+//' #takes a sin curve of 10000 in length and reduces it down to 2447 points
+//' point_reduce(sin(seq(1,100,length.out = 10000)))
 // [[Rcpp::export]]
-List point_reduce(NumericVector vec, double tolerance = .01){
+NumericVector vreduce(NumericVector vec, double tolerance = .01){
     //it, whatever it is currently pointing at in a loop, aka the iterator
     //x_it, the last value in x that we want to keep. So it gets updated when there is a new unique value given by it
     NumericVector x = clone(vec);
@@ -57,7 +55,7 @@ List point_reduce(NumericVector vec, double tolerance = .01){
       *x_it = x(x.size()-1);
       out.push_back(x.size());
     }
-      ++x_it; //want everything between begining and x_it
+      ++x_it; //want everything between beginning and x_it
       NumericVector out_val(std::distance(x.begin(),x_it));
       NumericVector::iterator out_it;
       out_it = out_val.begin();
@@ -67,7 +65,8 @@ List point_reduce(NumericVector vec, double tolerance = .01){
         ++out_it;
         ++it;
       }
-      return List::create(_["index"] = out, _["values"] = out_val);
+      //return List::create(_["index"] = out, _["values"] = out_val);
+      return wrap(out);
 }
 
 //This tempate class follows the same logic as std::unique, except instead of getting the values, it

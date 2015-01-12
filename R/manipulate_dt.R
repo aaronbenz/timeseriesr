@@ -277,7 +277,7 @@ manipulate_merge_list<- function(x, time_column, merge = TRUE, attribute_to_fiel
 #' #nearly the same image with a nearly a fourth of the original data set.
 dtreduce <- function(dt, column, tolerance = .01){
   if(!is.data.frame(dt)) stop("dt must be a data.frame/data.table")
-  index <- point_reduce(dt[[column]], tolerance = tolerance)$index
+  index <- vreduce(dt[[column]], tolerance = tolerance)
   dt[index,]
 }
 #This is the old version that is nice to keep around only for comparisson of speed difference

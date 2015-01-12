@@ -8,18 +8,16 @@
 #' @param vec A numeric vector
 #' @param tolerance A decimal representing the percentage of tolerance acceptible
 #' 
-#' @return The value return is a list of two vectors:
-#' index | vector contained indexed values of critical points
-#' values | vector containing the actual values
+#' @return The value returned is a vector consisting of the indexed values that should be kept
 #' 
 #' @examples
 #' point_reduce(1001:1100)
 #' point_reduce(1001:1100, .1)
 #' 
-#' #takes a sin curve of 99001 in length and reduces it down to 3008 points
-#' point_reduce(sin(seq(1,100,.001)))
-point_reduce <- function(vec, tolerance = .01) {
-    .Call('timeseriesr_point_reduce', PACKAGE = 'timeseriesr', vec, tolerance)
+#' #takes a sin curve of 10000 in length and reduces it down to 2447 points
+#' point_reduce(sin(seq(1,100,length.out = 10000)))
+vreduce <- function(vec, tolerance = .01) {
+    .Call('timeseriesr_vreduce', PACKAGE = 'timeseriesr', vec, tolerance)
 }
 
 #' De-duplicates a numeric vector/data.table/data.frame

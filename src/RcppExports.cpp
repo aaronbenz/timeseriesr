@@ -5,16 +5,16 @@
 
 using namespace Rcpp;
 
-// point_reduce
-List point_reduce(NumericVector vec, double tolerance = .01);
-RcppExport SEXP timeseriesr_point_reduce(SEXP vecSEXP, SEXP toleranceSEXP) {
+// vreduce
+NumericVector vreduce(NumericVector vec, double tolerance = .01);
+RcppExport SEXP timeseriesr_vreduce(SEXP vecSEXP, SEXP toleranceSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< NumericVector >::type vec(vecSEXP );
         Rcpp::traits::input_parameter< double >::type tolerance(toleranceSEXP );
-        List __result = point_reduce(vec, tolerance);
+        NumericVector __result = vreduce(vec, tolerance);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
