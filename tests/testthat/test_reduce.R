@@ -13,4 +13,5 @@ test_that("Test point_reduce Core Functions",{
 test_that("Test dtreduce functions",{
   expect_equal(dtreduce(dt,"y",.1)$y, c(.84,.94,.72,.55,.36,.14))
   expect_equal(dtreduce(dt,"y",.1)$x, c(1,2,7,8,9,10))
+  expect_equal(rownames(dtreduce(dt,"y",.1)), as.character(1:6))
 })

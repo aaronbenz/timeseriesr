@@ -278,7 +278,9 @@ manipulate_merge_list<- function(x, time_column, merge = TRUE, attribute_to_fiel
 dtreduce <- function(dt, column, tolerance = .01){
   if(!is.data.frame(dt)) stop("dt must be a data.frame/data.table")
   index <- vreduce(dt[[column]], tolerance = tolerance)
-  dt[index,]
+  dt <- dt[as.vector(index),]
+  if(!is.data.table(dt)) rownames(dt) <- seq_along(dt[[column]])
+  dt
 }
 #This is the old version that is nice to keep around only for comparisson of speed difference
 # dtreduce <- function(dt, column, tolerance = .01){
