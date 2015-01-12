@@ -26,7 +26,7 @@ In the future, I will create a vignette to help you understand how to use this p
 ###WARNING: DO NOT TRY TO PRINT/PLOT THIS
 df <- data.frame(time = 1:5e6, value = sin(seq(1,10, length.out = 5e6)))
 ```
-This data set is about 60 MBs. If you tried to do a `plot(df)`, you will find yourself waiting for minutes to view this plot, and that's if your lucky to escape without R crashing. Really, just unacceptable.
+This data set is about 60 MBs. If you tried to do a `plot(df)`, you will find yourself waiting for minutes to view this plot, and that's if you're lucky to escape without R crashing. Really, just unacceptable.
 
 You could try a sampling method to get 1 out of every 10 points, and in this case, it would work. However, you would ultimately be unconfident in your result because you could very likely be skipping critical spikes.
 
