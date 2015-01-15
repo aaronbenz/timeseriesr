@@ -10,7 +10,7 @@ Depends:
     R (>= 3.1),
     magrittr,
     data.table (>= 1.9.2)
-License: Apache2
+License: MIT
 LazyData: true
 LinkingTo: Rcpp
 Imports:
