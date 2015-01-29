@@ -3,8 +3,8 @@
 \alias{calc_area}
 \title{Calculate Area Under the Curve}
 \usage{
-calc_area(time_date, value, as_vector = FALSE, diff_time = FALSE,
-  neg_area = FALSE, na.replace = vreplace, ...)
+calc_area(time_date, value, unit_conversion = 1/1, as_vector = FALSE,
+  diff_time = FALSE, neg_area = FALSE, na.replace = vreplace, ...)
 }
 \arguments{
 \item{time_date}{A numeric or date.time vector}
@@ -18,6 +18,8 @@ calc_area(time_date, value, as_vector = FALSE, diff_time = FALSE,
 \item{neg_area}{Boolean describing if negative area should be measured or it all area is positive}
 
 \item{na.replace}{Function that replaces NA values from `value` with Last Observation Carried Forward. See \code{\link{vreplace}}}
+
+\item{time_unit}{The ratio of your variable to time. Be cautious of this unless inaccurate results appease you :)}
 }
 \value{
 The total area under the curve of `value` with respect to the time measured at `time`
