@@ -9,7 +9,7 @@
 #' 
 #' @param time_date A numeric or date.time vector
 #' @param value A numeric vector
-#' @param time_unit The ratio of your variable to time. Be cautious of this unless inaccurate results appease you :)
+#' @param unit_conversion The ratio of your variable to time. Be cautious of this unless inaccurate results appease you :)
 #' @param as_vector Boolean describing if return value should be the totaled sum or a vector representing area at each `time` value
 #' @param diff_time Boolean describing if `time` is the difference in area, or if it needs to be calculated
 #' @param neg_area Boolean describing if negative area should be measured or it all area is positive
@@ -26,7 +26,7 @@
 #'  calc_area(time, value, diff_time = T)
 #'  calc_area(time, value, neg_area = T)
 #'  calc_area(time, value, T, T)
-calc_area = function(time_date, value, unit_conversion = 1/1, as_vector = FALSE, diff_time=FALSE, neg_area = FALSE, na.replace = vreplace, ...){
+calc_area = function(time_date, value, unit_conversion = 1, as_vector = FALSE, diff_time=FALSE, neg_area = FALSE, na.replace = vreplace, ...){
     #excepting time_date and value to be numeric vectors of the same length
     stopifnot(length(time_date) == length(value),
               is.numeric(time_date), is.numeric(value),
@@ -39,16 +39,15 @@ calc_area = function(time_date, value, unit_conversion = 1/1, as_vector = FALSE,
     
     #if all area should be treated as positive, change all values to positive
     if(!neg_area) value <- abs(value) 
-    
     #if wanting total sum, do matrix calculation
     if(as_vector==FALSE) {
-        if(diff_time == FALSE) return((c(diff(time_date),0) %*% value)[1,1])
-        return((time_date %*% value)[1,1])
+        if(diff_time == FALSE) return((c(diff(time_date),0) %*% value)[1,1] * unit_conversion)
+        return((time_date %*% value)[1,1] * unit_conversion)
     }
     #if want an area vector returned, do vector calculation
     else{
-        if(diff_time == FALSE) return(c(diff(time_date),0) * value)
-        return(time_date * value)
+        if(diff_time == FALSE) return(c(diff(time_date),0) * value * unit_conversion)
+        return(time_date * value * unit_conversion)
     }
 }
 
