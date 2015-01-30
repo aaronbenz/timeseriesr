@@ -3,13 +3,15 @@
 \alias{calc_area}
 \title{Calculate Area Under the Curve}
 \usage{
-calc_area(time_date, value, as_vector = FALSE, diff_time = FALSE,
-  neg_area = FALSE, na.replace = vreplace, ...)
+calc_area(time_date, value, unit_conversion = 1/1, as_vector = FALSE,
+  diff_time = FALSE, neg_area = FALSE, na.replace = vreplace, ...)
 }
 \arguments{
 \item{time_date}{A numeric or date.time vector}
 
 \item{value}{A numeric vector}
+
+\item{unit_conversion}{The ratio of your variable to time. Be cautious of this unless inaccurate results appease you :)}
 
 \item{as_vector}{Boolean describing if return value should be the totaled sum or a vector representing area at each `time` value}
 

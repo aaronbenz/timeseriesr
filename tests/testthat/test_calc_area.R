@@ -13,7 +13,11 @@ test_that("Test Basic - No Parameters",{
   expect_equal(calc_area(1:10,c(1:5, NA, 7:10)),44)
   expect_equal(calc_area(1:10,c(1:5, NA, 7:10),replacement = 10),49)
   expect_equal(calc_area(1:10,c(NA, 2:10),first = 10),54)
-  calc_area(1:10, c(NA, 2:10))
+})
+
+test_that("Test Unit Conversion",{
+  expect_equal(calc_area(time, value_lin,unit_conversion = .1),4.5)
+  expect_equal(calc_area(time, value_lin,unit_conversion = .1, as_vector = T),c(.1*1:9,0))
 })
 
 test_that("Test Basic - as_vector = TRUE",{
