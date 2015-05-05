@@ -1,3 +1,5 @@
+![alt tag](https://travis-ci.org/aaronbenz/timeseries.svg?branch=master)
+
 timeseries
 ==========
 This is a work-in-progress R package that will help you calculate and plot time-series data at great speed. 
