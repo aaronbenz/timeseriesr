@@ -1,4 +1,5 @@
-![alt tag](https://travis-ci.org/aaronbenz/timeseries.svg?branch=master)
+[![Build Status](https://travis-ci.org/aaronbenz/timeseriesr.svg?branch=master)](https://travis-ci.org/aaronbenz/timeseriesr)
+[![Coverage Status](https://img.shields.io/coveralls/aaronbenz/timeseriesr.svg)](https://coveralls.io/r/aaronbenz/timeseriesr?branch=master)
 
 timeseries
 ==========
