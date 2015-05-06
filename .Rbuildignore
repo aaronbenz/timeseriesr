@@ -1,5 +1,7 @@
-^.*\.Rproj$
+^timeseriesr\.Rproj$
 ^\.Rproj\.user$
-^.*\tests\*
-^.*\shiny\*
-^.*.o
+^\.travis\.yml$
+^NEWS.md$
+^cran-comments\.md$
+^revdep$
+^CONDUCT\.md$

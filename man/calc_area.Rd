@@ -3,7 +3,7 @@
 \alias{calc_area}
 \title{Calculate Area Under the Curve}
 \usage{
-calc_area(time_date, value, unit_conversion = 1/1, as_vector = FALSE,
+calc_area(time_date, value, unit_conversion = 1, as_vector = FALSE,
   diff_time = FALSE, neg_area = FALSE, na.replace = vreplace, ...)
 }
 \arguments{
