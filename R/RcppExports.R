@@ -11,11 +11,11 @@
 #' @return The value returned is a vector consisting of the indexed values that should be kept
 #' 
 #' @examples
-#' point_reduce(1001:1100)
-#' point_reduce(1001:1100, .1)
+#' vreduce(1001:1100)
+#' vreduce(1001:1100, .1)
 #' 
 #' #takes a sin curve of 10000 in length and reduces it down to 2447 points
-#' point_reduce(sin(seq(1,100,length.out = 10000)))
+#' vreduce(sin(seq(1,100,length.out = 10000)))
 vreduce <- function(vec, tolerance = .01) {
     .Call('timeseriesr_vreduce', PACKAGE = 'timeseriesr', vec, tolerance)
 }

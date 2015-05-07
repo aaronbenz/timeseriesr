@@ -1,6 +1,6 @@
 Package: timeseriesr
 Title: Helpful functions for merging, calculating, and plotting time-series data
-Version: 0.1.1.1
+Version: 0.1.1.2
 Authors@R: person("Aaron", "Benz", email = "aaron.n.benz@gmail.com",role =
     c("aut", "cre"))
 Description: This package provides functions that enables complex time-series

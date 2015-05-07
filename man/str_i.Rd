@@ -15,6 +15,6 @@ Shorthand function for getting indexes of a shorter string on a longer string. C
 of the names of a data.frame/data.table
 }
 \examples{
-index_from_string(letters, c('f','g','y'))
+str_i(letters, c('f','g','y'))
 }
 

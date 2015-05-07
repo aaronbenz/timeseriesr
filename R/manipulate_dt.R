@@ -86,11 +86,13 @@ dtdeduplicate <- function(x,key){
 #' @details This is not meant for classes like lm. Only for plain old everyday boring R objects
 #' @examples
 #' is.empty(1:5)
-#' is.empty((1:9,3,3)) 
+#' is.empty(c(1:9,3,3)) 
 #' is.empty(NULL)
-is.empty <- function (x) 
-{
-    (is.null(x) || nrow(x) == 0 || ncol(x) == 0)
+is.empty <- function (x){
+      if (is.data.frame(x)){
+        return (is.null(x) || length(x) == 0 || nrow(x) == 0 || ncol(x) == 0)
+      }
+      return (is.null(x) || length(x) == 0)
 }
 
 #' Reduce the amount of points of a data.table/data.frame
@@ -154,7 +156,7 @@ dtreduce <- function(dt, column, tolerance = .01){
 #' @examples
 #' tmp <- 1:10
 #' voffset(tmp)
-#' voffset(temp, end_value = 0)
+#' voffset(tmp, end_value = 0)
 voffset <- function(x, offset = 1, end_value = "Last"){
     stopifnot(is.integer(offset) | is.numeric(offset),
               is.vector(x),

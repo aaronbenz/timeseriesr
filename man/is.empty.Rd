@@ -17,7 +17,7 @@ This is not meant for classes like lm. Only for plain old everyday boring R obje
 }
 \examples{
 is.empty(1:5)
-is.empty((1:9,3,3))
+is.empty(c(1:9,3,3))
 is.empty(NULL)
 }
 

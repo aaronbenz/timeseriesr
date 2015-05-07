@@ -20,12 +20,12 @@
 #' @examples
 #'  time <- 1:10
 #'  value <- sin(1:10)
-#'  examples
+#'  
 #'  calc_area(time, value)
-#'  calc_area(time, value, T)
-#'  calc_area(time, value, diff_time = T)
-#'  calc_area(time, value, neg_area = T)
-#'  calc_area(time, value, T, T)
+#'  calc_area(time, value, TRUE)
+#'  calc_area(time, value, diff_time = TRUE)
+#'  calc_area(time, value, neg_area = TRUE)
+#'  calc_area(time, value, TRUE, TRUE)
 calc_area = function(time_date, value, unit_conversion = 1, as_vector = FALSE, diff_time=FALSE, neg_area = FALSE, na.replace = vreplace, ...){
     #excepting time_date and value to be numeric vectors of the same length
     stopifnot(length(time_date) == length(value),
@@ -124,7 +124,7 @@ roll_on <- function(dt,new_times, time_col = "time", group_by = NULL,...){
 #' @param str_lng A Character Vector
 #' @param str_shrt A Character Vector
 #' @examples
-#' index_from_string(letters, c('f','g','y'))
+#' str_i(letters, c('f','g','y'))
 str_i <- function(str_lng, str_shrt){
   stopifnot(is.character(str_lng),
             is.character(str_shrt))

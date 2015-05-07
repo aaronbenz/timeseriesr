@@ -19,6 +19,6 @@ for short hand purposes in other functions
 \examples{
 tmp <- 1:10
 voffset(tmp)
-voffset(temp, end_value = 0)
+voffset(tmp, end_value = 0)
 }
 

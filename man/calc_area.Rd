@@ -31,11 +31,11 @@ under the curve. Its apprach is to use Reimann Left Sums is and aimed towards ti
 \examples{
 time <- 1:10
  value <- sin(1:10)
- examples
+
  calc_area(time, value)
- calc_area(time, value, T)
- calc_area(time, value, diff_time = T)
- calc_area(time, value, neg_area = T)
- calc_area(time, value, T, T)
+ calc_area(time, value, TRUE)
+ calc_area(time, value, diff_time = TRUE)
+ calc_area(time, value, neg_area = TRUE)
+ calc_area(time, value, TRUE, TRUE)
 }
 
