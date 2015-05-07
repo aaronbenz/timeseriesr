@@ -15,7 +15,7 @@ install.packages("devtools")
 Load devtools and Download timeseriesr package
 ```r
 library(devtools)
-install_github("aaronbenz/timeseries")
+install_github("aaronbenz/timeseriesr")
 ```
 
 ##Why use the timeseriesr package?
