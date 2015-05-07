@@ -3,6 +3,9 @@ language: r
 sudo: required
 warnings_are_errors: false
 
+before_install:
+  pip install codecov
+  
 r_binary_packages:
   - XML
   - Rcpp
